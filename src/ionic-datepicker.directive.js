@@ -18,7 +18,7 @@
             },
             link: function (scope, element, attrs) {
                 
-                if(typeOf scope.inputObj.inputDate === 'string'){
+                if(typeof scope.inputObj.inputDate === 'string'){
                     scope.inputObj.inputDate = new Date(scope.inputObj.inputDate);
                 }
                 
@@ -27,10 +27,12 @@
                 scope.disabledDates = [];
 
                 //Setting the title, today, close and set strings for the date picker
+		var refreshLabels = function () {
                 scope.titleLabel = scope.inputObj.titleLabel ? (scope.inputObj.titleLabel) : 'Select Date';
                 scope.todayLabel = scope.inputObj.todayLabel ? (scope.inputObj.todayLabel) : 'Today';
                 scope.closeLabel = scope.inputObj.closeLabel ? (scope.inputObj.closeLabel) : 'Close';
                 scope.setLabel = scope.inputObj.setLabel ? (scope.inputObj.setLabel) : 'Set';
+		}
                 scope.showTodayButton = scope.inputObj.showTodayButton ? (scope.inputObj.showTodayButton) : 'true';
                 scope.errorMsgLabel = scope.inputObj.errorMsgLabel ? (scope.inputObj.errorMsgLabel) : 'Please select a date.';
                 scope.setButtonType = scope.inputObj.setButtonType ? (scope.inputObj.setButtonType) : 'button-stable cal-button';
@@ -54,45 +56,46 @@
                     isSet: false
                 };
 
-                // creating buttons
                 var buttons = [];
-                buttons.push({
-                    text: scope.closeLabel,
-                    type: scope.closeButtonType,
-                    onTap: function (e) {
-                        scope.inputObj.callback(undefined);
-                    }
-                });
+                var createButtons = function () {
+                   buttons.push({
+                       text: scope.closeLabel,
+                       type: scope.closeButtonType,
+                       onTap: function (e) {
+                           scope.inputObj.callback(undefined);
+                       }
+                   });
 
-                if (scope.showClear) {
-                    buttons.push({
-                        text: scope.clearLabel,
-                        type: scope.clearButtonType,
-                        onTap: function (e) {
-                            dateCleared();
-                        }
-                    });
-                };
+                   if (scope.showClear) {
+                       buttons.push({
+                           text: scope.clearLabel,
+                           type: scope.clearButtonType,
+                           onTap: function (e) {
+                               dateCleared();
+                           }
+                       });
+                   };
 
-                if (scope.showTodayButton == 'true') {
-                    buttons.push({
-                        text: scope.todayLabel,
-                        type: scope.todayButtonType,
-                        onTap: function (e) {
-                            todaySelected();
-                            //e.preventDefault();
-                        }
-                    });
-                }
+                   if (scope.showTodayButton == 'true') {
+                       buttons.push({
+                           text: scope.todayLabel,
+                           type: scope.todayButtonType,
+                           onTap: function (e) {
+                               todaySelected();
+                               //e.preventDefault();
+                           }
+                       });
+                   }
 
-                if (!scope.closeOnSelect) {
-                    buttons.push({
-                        text: scope.setLabel,
-                        type: scope.setButtonType,
-                        onTap: function () {
-                            dateSelected();
-                        }
-                    });
+                   if (!scope.closeOnSelect) {
+                       buttons.push({
+                           text: scope.setLabel,
+                           type: scope.setButtonType,
+                           onTap: function () {
+                               dateSelected();
+                           }
+                       });
+                   }
                 }
                 //Setting the from and to dates - Function used to enable/disable prv/future dates
                 var setToFrom = function () {
@@ -443,6 +446,8 @@
                     } else {
                         refreshDateList(new Date());
                     }
+                    refreshLabels();
+                    createButtons();
                     if (scope.templateType.toLowerCase() === 'modal') {
                         scope.openModal();
                     } else {
